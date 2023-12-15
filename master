@@ -1,0 +1,36 @@
+#https://docs.python.org/3/library/io.html
+#https://pillow.readthedocs.io/en/stable/
+
+import PIL
+from PIL import Image
+import pandas as pd
+import pyodbc
+from io import BytesIO 
+
+cnxn = pyodbc.connect("DRIVER={SQL Server};"
+            "SERVER=server;"
+            "DATABASE=database;"
+            "Trusted_Connection=yes;")
+
+query = (
+        """
+        SELECT * FROM imagetable
+        """)
+
+data = pd.read_sql(query, cnxn)
+
+lis = data.at[0, 'Cimagedata']
+type(lis)
+
+
+# with open("filepathofbinary\\imageToSave.txt", "wb") as fh:
+#     fh.write(lis)
+
+# img = "filepathtoimage\\imageToSave.txt"
+# with open(img) as f:
+#     lines = f.readlines()
+
+file_like= BytesIO(lis)
+img=PIL.Image.open(file_like)
+# img.show()
+img.save("filepath\\imageToSave.jpeg")
